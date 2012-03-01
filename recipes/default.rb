@@ -28,29 +28,29 @@ service "portmap" do
 end
 
 # Start NFS client components
-service "nfs-client" do
-  case node["platform"]
-    when "redhat","centos","scientific"
-      service_name "nfslock"
-    when "debian","ubuntu"
-      #service_name "statd"
-  end
-  action [ :enable, :start ]
-end
+#service "nfs-client" do
+  #case node["platform"]
+    #when "redhat","centos","scientific"
+      #service_name "nfslock"
+    #when "debian","ubuntu"
+      ##service_name "statd"
+  #end
+  #action [ :enable, :start ]
+#end
 
 # Configure NFS client components
-case node["platform"]
-  when "redhat","centos","scientific"
-    template "/etc/sysconfig/nfs" do
-      mode 0644
-      notifies :restart, "service[nfs-client]"
-    end
-  when "debian","ubuntu"
-    template "/etc/modprobe.d/lockd.conf" do
-      mode 0644
-    end
-    template "/etc/default/nfs-common" do
-      mode 0644
-      notifies :restart, "service[nfs-client]"
-    end
-end
+#case node["platform"]
+  #when "redhat","centos","scientific"
+    #template "/etc/sysconfig/nfs" do
+      #mode 0644
+      #notifies :restart, "service[nfs-client]"
+    #end
+  #when "debian","ubuntu"
+    #template "/etc/modprobe.d/lockd.conf" do
+      #mode 0644
+    #end
+    #template "/etc/default/nfs-common" do
+      #mode 0644
+      #notifies :restart, "service[nfs-client]"
+    #end
+#end
