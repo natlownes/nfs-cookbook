@@ -33,7 +33,7 @@ service "nfs-client" do
     when "redhat","centos","scientific"
       service_name "nfslock"
     when "debian","ubuntu"
-      service_name "statd"
+      #service_name "statd"
   end
   action [ :enable, :start ]
 end
