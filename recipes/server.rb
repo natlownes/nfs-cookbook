@@ -36,6 +36,14 @@ service "nfs-server" do
   action [ :start, :enable ]
 end
 
+if ["redhat","centos","scientific"].include? node["platform"]
+  service "nfs-lock" do
+    service_name "nfslock"
+    action [ :start, :enable ]
+  end
+end
+
+
 # Configure nfs-server components
 case node["platform"]
   when "redhat","centos","scientific"

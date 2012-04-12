@@ -24,6 +24,9 @@ end
 
 # Start portmap on 111
 service "portmap" do
+  if node["platform"] == "centos" && node["platform_version"] >= "6.0"
+    service_name "rpcbind"
+  end
   action [ :start, :enable ]
 end
 

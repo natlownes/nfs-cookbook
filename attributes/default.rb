@@ -18,13 +18,20 @@
 #
 
 case node["platform"]
-  when "redhat","centos","scientific"
+  when "redhat","scientific"
     default["nfs"]["packages"] = [ "nfs-utils", "portmap" ]
+  when "centos"
+    if node["platform_version"] >= '6.0'
+      default["nfs"]["packages"] = [ "nfs-utils", "rpcbind" ]
+    else
+      default["nfs"]["packages"] = [ "nfs-utils", "portmap" ]
+    end
   when "ubuntu","debian"
     default["nfs"]["packages"] = [ "nfs-common", "portmap" ]
   else
     default["nfs"]["packages"] = Array.new
 end
+
 
 default["nfs"]["port"]["statd"] = 32765
 default["nfs"]["port"]["statd_out"] = 32766
