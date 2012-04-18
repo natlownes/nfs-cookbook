@@ -29,7 +29,7 @@ end
 # Start nfs-server components
 service "nfs-server" do
   case node["platform"]
-    when "redhat","centos","scientific"
+    when "redhat","centos","scientific","amazon"
       service_name "nfs"
     when "ubuntu","debian"
       service_name "nfs-kernel-server"
@@ -37,17 +37,17 @@ service "nfs-server" do
   action [ :start, :enable ]
 end
 
-if ["redhat","centos","scientific"].include? node["platform"]
-  service "nfs-lock" do
-    service_name "nfslock"
-    action [ :start, :enable ]
-  end
+
+service "nfs-lock" do
+  service_name "nfslock"
+  action [ :start, :enable ]
+  only_if { ["redhat","centos","scientific","amazon"].include? node["platform"] }
 end
 
 
 # Configure nfs-server components
 case node["platform"]
-  when "redhat","centos","scientific"
+  when "redhat","centos","scientific","amazon"
     template "/etc/sysconfig/nfs" do
       mode 0644
       notifies :restart, "service[nfs-server]"

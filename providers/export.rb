@@ -1,7 +1,7 @@
 def load_current_resource
   @export = Chef::Resource::NfsExport.new(new_resource.directory)
   Chef::Log.debug("Checking whether #{new_resource.directory} is already an NFS export")
-  @export.exists = node[:nfs][:exports].detect {|x| x.match "^#{new_resource.directory}" }
+  @export.exists = node['nfs']['exports'].detect {|x| x.match "^#{new_resource.directory}" }
 end
 
 action :create do
@@ -11,7 +11,7 @@ action :create do
     extra_options = new_resource.extra_options.join(',')
     extra_options = ",#{extra_options}" unless extra_options == ""
     export = "#{new_resource.directory} #{new_resource.network}(#{ro_rw},#{sync_async}#{extra_options})"
-    node[:nfs][:exports] << export
+    node['nfs']['exports'] << export
     notifies :create, resources("template[/etc/exports]")
     new_resource.updated_by_last_action(true)
   end

@@ -33,7 +33,7 @@ end
 # Start NFS client components
 service "nfs-client" do
   case node["platform"]
-    when "redhat","centos","scientific"
+    when "redhat","centos","scientific","amazon"
       service_name "nfslock"
     when "debian","ubuntu"
       service_name "statd"
@@ -43,7 +43,7 @@ end
 
 # Configure NFS client components
 case node["platform"]
-  when "redhat","centos","scientific"
+  when "redhat","centos","scientific","amazon"
     template "/etc/sysconfig/nfs" do
       mode 0644
       notifies :restart, "service[nfs-client]"

@@ -18,7 +18,7 @@
 #
 
 case node["platform"]
-  when "redhat","scientific"
+  when "redhat","scientific","amazon"
     default["nfs"]["packages"] = [ "nfs-utils", "portmap" ]
   when "centos"
     if node["platform_version"] >= '6.0'
