@@ -12,7 +12,11 @@ action :create do
     extra_options = ",#{extra_options}" unless extra_options == ""
     export = "#{new_resource.directory} #{new_resource.network}(#{ro_rw},#{sync_async}#{extra_options})"
     node['nfs']['exports'] << export
-    notifies :create, resources("template[/etc/exports]")
+    execute "notify_export_create" do
+      command "/bin/true"
+      notifies :create, resources("template[/etc/exports]")
+      action :run
+    end
     new_resource.updated_by_last_action(true)
   end
 end
