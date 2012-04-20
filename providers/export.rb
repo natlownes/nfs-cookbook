@@ -1,7 +1,7 @@
 def load_current_resource
   @export = Chef::Resource::NfsExport.new(new_resource.directory)
   Chef::Log.debug("Checking whether #{new_resource.directory} is already an NFS export")
-  @export.exists = node['nfs']['exports'].detect {|x| x.match "^#{new_resource.directory}" }
+  @export.exists node['nfs']['exports'].detect {|x| x.match "^#{new_resource.directory}" }
 end
 
 action :create do
