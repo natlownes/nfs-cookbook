@@ -26,9 +26,9 @@ ATTRIBUTES
 
 * nfs["exports"]
 
-  - This may be replaced in the future by an LWRP to load export definitions from
-    a data bag.  For now, its a simple array of strings to populate in an export file.
-    Note: The "nfs::exports" recipe is separate from the "nfs::server" recipe.
+  - An array of strings to populate in an export file. Can be manipulated in
+    recipes with the nfs_export LWRP.
+
 
 USAGE
 =====
@@ -57,12 +57,22 @@ Then in an nfs_server.rb role that is applied to NFS servers:
         ]
       }
     )
-    run_list => [ "nfs::server", "nfs::exports" ]
+    run_list => [ "nfs::server" ]
+
+Applications or other cookbooks can setup exports with nfs_export:
+
+    nfs_export "/foobar" do
+      network '*'
+      writeable true
+      sync false
+      extra_options ['no_root_squash']
+    end
 
 LICENSE AND AUTHOR
 ==================
 
 Author:: Eric G. Wolfe (<wolfe21@marshall.edu>)
+Author:: Michael Ivey (<ivey@gweezlebur.com>)
 
 Copyright 2011
 
