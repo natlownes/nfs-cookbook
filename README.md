@@ -11,24 +11,26 @@ Should work on any Red Hat-family or Debian-family Linux distribution.
 ATTRIBUTES
 ==========
 
-* nfs["packages"]
+* nfs['service']
+  - portmap - the portmap or rpcbind service depending on platform
+  - lock - the statd or nfslock service depending on platform
+  - server - the server component, nfs or nfs-kernel-server depending on platform
 
-  - Makes a best effort to choose NFS client packages dependent on platform
-  - NFS server package needs to be hardcoded for Debian/Ubuntu in the server
-    recipe, or overridden in a role.
+* nfs['config']
+  - client\_templates - templates to iterate through on client systems, chosen by platform
+  - server\_template - server specific template, chosen by platform
 
-* nfs["port"]
+* nfs['port']
 
-  - ["statd"] = Listen port for statd, default 32765
-  - ["statd_out"] = Outgoing port for statd, default 32766
-  - ["mountd"] = Listen port for mountd, default 32767
-  - ["lockd"] = Listen port for lockd, default 32768
+  - ['statd'] = Listen port for statd, default 32765
+  - ['statd\_out'] = Outgoing port for statd, default 32766
+  - ['mountd'] = Listen port for mountd, default 32767
+  - ['lockd'] = Listen port for lockd, default 32768
 
-* nfs["exports"]
+* nfs['exports']
 
-  - This may be replaced in the future by an LWRP to load export definitions from
-    a data bag.  For now, its a simple array of strings to populate in an export file.
-    Note: The "nfs::exports" recipe is separate from the "nfs::server" recipe.
+  - An array of strings to populate in an export file. Can be manipulated in
+    recipes with the nfs_export LWRP.
 
 USAGE
 =====
@@ -39,7 +41,7 @@ To install the NFS components for a client system, simply add nfs to the run_lis
     description "Role applied to all systems"
     run_list => [ "nfs" ]
 
-Then in an nfs_server.rb role that is applied to NFS servers:
+Then in an nfs\_server.rb role that is applied to NFS servers:
 
     name "nfs_server"
     description "Role applied to the system that should be an NFS server."
@@ -57,7 +59,16 @@ Then in an nfs_server.rb role that is applied to NFS servers:
         ]
       }
     )
-    run_list => [ "nfs::server", "nfs::exports" ]
+    run_list => [ "nfs::server" ]
+
+Applications or other cookbooks can setup exports with nfs_export:
+
+    nfs_export "/foobar" do
+      network '*'
+      writeable true
+      sync false
+      extra_options ['no_root_squash']
+    end
 
 LICENSE AND AUTHOR
 ==================
