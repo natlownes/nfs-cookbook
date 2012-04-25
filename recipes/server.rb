@@ -22,39 +22,17 @@ include_recipe "nfs::exports"
 
 # Install server components for Debian
 case node["platform"]
-  when "debian","ubuntu"
-    package "nfs-kernel-server"
+when "debian","ubuntu"
+  package "nfs-kernel-server"
 end
 
 # Start nfs-server components
-service "nfs-server" do
-  case node["platform"]
-    when "redhat","centos","scientific","amazon"
-      service_name "nfs"
-    when "ubuntu","debian"
-      service_name "nfs-kernel-server"
-  end
+service node['nfs']['service']['server'] do
   action [ :start, :enable ]
 end
-
-
-service "nfs-lock" do
-  service_name "nfslock"
-  action [ :start, :enable ]
-  only_if { ["redhat","centos","scientific","amazon"].include? node["platform"] }
-end
-
 
 # Configure nfs-server components
-case node["platform"]
-  when "redhat","centos","scientific","amazon"
-    template "/etc/sysconfig/nfs" do
-      mode 0644
-      notifies :restart, "service[nfs-server]"
-    end
-  when "ubuntu","debian"
-    template "/etc/default/nfs-kernel-server" do
-      mode 0644
-      notifies :restart, "service[nfs-server]"
-    end
+template node['nfs']['config']['server_template'] do
+  mode 0644
+  notifies :restart, resources(:service => node['nfs']['service']['server'])
 end

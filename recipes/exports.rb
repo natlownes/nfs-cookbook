@@ -22,7 +22,6 @@ execute "exportfs" do
   action :nothing
 end
 
-
 template "/etc/exports" do
   mode 0644
   notifies :run, "execute[exportfs]"
